@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LogIt.Core
 {
-    public interface ILogger
+    public interface ILogger : IDisposable
     {
         string Identifier { get; set; }
 
