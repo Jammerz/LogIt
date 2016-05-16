@@ -19,5 +19,7 @@ namespace LogIt.Core
         IEnumerable<Log> GetAll();
 
         void ResetPosition();
+
+        long SeekPosition(long position);
     }
 }

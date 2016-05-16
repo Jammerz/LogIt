@@ -8,6 +8,6 @@ namespace LogIt.Core
 {
     public interface ILogSearcher : IDisposable
     {
-        IEnumerable<Log> Query(LogSearchOptions queryOptions);
+        IEnumerable<Log> Search(LogSearchOptions queryOptions);
     }
 }

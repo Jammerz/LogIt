@@ -10,7 +10,7 @@ namespace LogIt.Core
     {
         string Identifier { get; set; }
 
-        string Name { get; set; }
+        string Description { get; set; }
 
         bool HasReader { get; set; }
 

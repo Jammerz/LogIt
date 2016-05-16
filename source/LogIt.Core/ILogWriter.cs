@@ -9,5 +9,7 @@ namespace LogIt.Core
     public interface ILogWriter
     {
         Log Write(Log log);
+
+        IEnumerable<Log> Write(IEnumerable<Log> logs);
     }
 }
