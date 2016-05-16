@@ -8,6 +8,6 @@ namespace LogIt.Core
 {
     public interface ILogWriter
     {
-        ILog Write(ILog log);
+        Log Write(Log log);
     }
 }

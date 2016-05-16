@@ -12,11 +12,11 @@ namespace LogIt.Core
 
         bool EndOfLogReached { get; }
 
-        ILog GetNext();
+        Log GetNext();
 
-        IEnumerable<ILog> GetNext(int count);
+        IEnumerable<Log> GetNext(int count);
 
-        IEnumerable<ILog> GetAll();
+        IEnumerable<Log> GetAll();
 
         void ResetPosition();
     }
