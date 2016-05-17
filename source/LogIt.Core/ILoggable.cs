@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace LogIt.Core
 {
-    public interface ILogWriter
+    public interface ILoggable
     {
-        Log Write(ILoggable log);
-
-        IEnumerable<Log> Write(IEnumerable<ILoggable> logs);
+        Log GetLog();
     }
 }
