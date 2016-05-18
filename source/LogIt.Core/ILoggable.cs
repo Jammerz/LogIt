@@ -8,6 +8,6 @@ namespace LogIt.Core
 {
     public interface ILoggable
     {
-        Log GetLog();
+        LogBase GetLog();
     }
 }
