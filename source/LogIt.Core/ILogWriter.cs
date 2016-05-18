@@ -8,8 +8,8 @@ namespace LogIt.Core
 {
     public interface ILogWriter
     {
-        Log Write(ILoggable log);
+        Log Write(LogBase log);
 
-        IEnumerable<Log> Write(IEnumerable<ILoggable> logs);
+        IEnumerable<Log> Write(List<LogBase> logs);
     }
 }
