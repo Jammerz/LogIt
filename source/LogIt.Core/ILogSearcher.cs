@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LogIt.Core
 {
-    public interface ILogSearcher : IDisposable
+    public interface ILogSearcher : ILogConnection
     {
         IEnumerable<Log> Search(LogSearchOptions queryOptions);
     }

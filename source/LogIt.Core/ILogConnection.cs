@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace LogIt.Core
 {
-    public interface ILogWriter : ILogConnection
+    public interface ILogConnection : IDisposable
     {
-        Log Write(LogBase log);
+        bool IsOpen();
 
-        IEnumerable<Log> Write(List<LogBase> logs);
+        void Open();
+
+        void Close();
     }
 }

@@ -8,15 +8,9 @@ namespace LogIt.Core
 {
     public interface ILogger : IDisposable
     {
-        string Identifier { get; set; }
+        Guid Identifier { get; }
 
-        string Description { get; set; }
-
-        bool HasReader { get; set; }
-
-        bool HasSearcher { get; set; }
-
-        bool HasWriter { get; set; }
+        string Description { get; }
 
         LoggingOptions Options { get; set; }
 

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace LogIt.Core
 {
-    public interface ILogReader : IDisposable
+    public interface ILogReader : ILogConnection
     {
-        long Position { get; }
+        long ReaderPosition { get; }
 
         bool EndOfLogReached { get; }
 
