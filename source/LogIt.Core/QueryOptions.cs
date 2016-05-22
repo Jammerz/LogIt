@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LogIt.Core
 {
-    public class LogSearchOptions
+    public class QueryOptions
     {
         public List<LoggingType> LogTypes { get; set; }
 

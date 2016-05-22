@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace LogIt.Core
 {
-    public interface ILogSearcher : ILogConnection
+    public interface ILogQuery : ILogConnection
     {
-        IEnumerable<Log> Search(LogSearchOptions queryOptions);
+        IEnumerable<Log> Search(QueryOptions queryOptions);
     }
 }

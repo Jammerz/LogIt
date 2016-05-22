@@ -16,7 +16,7 @@ namespace LogIt.Core
 
         ILogReader GetReader();
 
-        ILogSearcher GetSearcher();
+        ILogQuery GetSearcher();
 
         ILogWriter GetWriter();        
     }

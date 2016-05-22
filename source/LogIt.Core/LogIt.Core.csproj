@@ -45,13 +45,13 @@
     <Compile Include="Log.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="ILogReader.cs" />
-    <Compile Include="ILogSearcher.cs" />
+    <Compile Include="ILogQuery.cs" />
     <Compile Include="ILogWriter.cs" />
     <Compile Include="LoggingDetail.cs" />
     <Compile Include="LoggingOptions.cs" />
     <Compile Include="LoggingType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="LogSearchOptions.cs" />
+    <Compile Include="QueryOptions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
