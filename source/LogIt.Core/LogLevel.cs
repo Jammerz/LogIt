@@ -8,9 +8,11 @@ namespace LogIt.Core
 {
     public enum LogLevel
     {
-        Error = 50,
-        Warning = 40,
-        Info = 30,
+        Undefined = 0,
+        Critical = 100,
+        Error = 90,
+        Warning = 70,
+        Info = 50,
         Debug = 20,
         Trace = 10
     }
