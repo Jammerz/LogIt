@@ -14,12 +14,14 @@ namespace LogIt.Core
             get { return _Writers; }
             private set { _Writers = value ?? new Dictionary<Guid, ILogWriter>(); }
         }
+        private readonly object WritersLock = new object();
 
         private ControllerConfig _Config;
         public ControllerConfig Config {
             get { return _Config; }
             set { _Config = value ?? new ControllerConfig(); }
         }
+        private readonly object ConfigLock = new object();
 
         private bool _ControllerLoggingEnabled;
         public bool ControllerLoggingEnabled {
@@ -28,6 +30,7 @@ namespace LogIt.Core
                 ToggleControllerLogging(value);
             }
         }
+        private readonly object ControllerLoggingEnabledLock = new object();
 
         public event LogWriterError OnWriterError;
         public delegate LogWriterErrorArgs LogWriterError(object sender, LogWriterErrorArgs args);
@@ -50,22 +53,28 @@ namespace LogIt.Core
             if (writer == null)
                 throw new ArgumentNullException(nameof(writer));
 
-            if (!Writers.ContainsKey(writer.Identifier))
-                Writers.Add(writer.Identifier, writer);
-            else
-                throw new ArgumentException("A writer with a matching identifier is already registered with this controller.", nameof(writer));
+            lock (WritersLock)
+            {
+                if (!Writers.ContainsKey(writer.Identifier))
+                    Writers.Add(writer.Identifier, writer);
+                else
+                    throw new ArgumentException("A writer with a matching identifier is already registered with this controller.", nameof(writer));
+            }            
         }
 
         public virtual void DeList(Guid identifer)
         {
-            ILogWriter writer = null;
-            if (Writers.TryGetValue(identifer, out writer))
+            lock (WritersLock)
             {
-                Writers.Remove(identifer);
+                ILogWriter writer = null;
+                if (Writers.TryGetValue(identifer, out writer))
+                {
+                    Writers.Remove(identifer);
 
-                writer.Dispose();
+                    writer.Dispose();
 
-                writer = null;
+                    writer = null;
+                }
             }
         }
 
@@ -164,13 +173,12 @@ namespace LogIt.Core
         private void ToggleControllerLogging(bool loggingEnabled)
         {
             WriteToControllerLog(String.Format("Toggling controller logging from {0} to {1}.", ControllerLoggingEnabled, loggingEnabled));
-
+            
             if (_ControllerLoggingEnabled == loggingEnabled)
                 return; // No need to bother if current equals value
 
-            _ControllerLoggingEnabled = loggingEnabled; // Set here to prevent further logging attempts during disposal (if value == false)
-
-            if (loggingEnabled)  // Initialise or dispose controller log depending on value
+            // Initialise or dispose controller log depending on value
+            if (loggingEnabled)    
                 InitControllerLog();
             else
                 DisposeControllerLog();
@@ -183,14 +191,18 @@ namespace LogIt.Core
             if (_ControllerDebugLog != null)
                 DisposeControllerLog(); // Dispose and reset if ControllerLog already exists
 
-            // TODO: LogController.InitControllerLog : Customise config so it is suitable for controller logging.
-            ControllerConfig config = new ControllerConfig();
-            _ControllerDebugLog = new LogController(config);
+            lock (ControllerLoggingEnabledLock)
+            {
+                // TODO: LogController.InitControllerLog : Customise config so it is suitable for controller logging.
+                ControllerConfig config = new ControllerConfig();
+                _ControllerDebugLog = new LogController(config);
 
-            // TODO: LogController.InitControllerLog : Add standard output log once developed
+                // TODO: LogController.InitControllerLog : Add standard output log once developed
+                
+                // TODO: LogController.InitControllerLog : Add method to add user specified ILogWriters to controller logging (specified in controller config maybe?)
 
-
-            // TODO: LogController.InitControllerLog : Add method to add user specified ILogWriters to controller logging
+                _ControllerLoggingEnabled = true;
+            }
 
             WriteToControllerLog("Controller log initialised.");
         }
@@ -199,19 +211,25 @@ namespace LogIt.Core
         {
             WriteToControllerLog("Disposing current controller log...");
 
-            if (_ControllerDebugLog == null)
-                return;
+            lock (ControllerLoggingEnabledLock)
+            {
+                // Set here to prevent further logging attempts during disposal
+                _ControllerLoggingEnabled = false;
 
-            _ControllerDebugLog.Dispose();
-            _ControllerDebugLog = null;
+                if (_ControllerDebugLog == null)
+                    return;
+
+                _ControllerDebugLog.Dispose();
+                _ControllerDebugLog = null;                
+            }
         }
 
         private void WriteToControllerLog(string message, NameValueCollection logDetail = null)
         {
-            if (!ControllerLoggingEnabled)
+            if (ControllerLoggingEnabled)   // Do not use lock here as Debug call *could* potentially take some time and we do not want to lock the property for any amount of time
+                _ControllerDebugLog?.Debug(message, logDetail); // Use ternary as best thread safe call to ControllerLog without using lock
+            else
                 return;
-
-            _ControllerDebugLog.Debug(message, logDetail);
         }
     }
 
