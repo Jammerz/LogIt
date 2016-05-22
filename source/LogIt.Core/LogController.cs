@@ -130,18 +130,27 @@ namespace LogIt.Core
             if (writer == null)
                 throw new ArgumentNullException(nameof(writer));
 
+            WriteToControllerLog(String.Format("Processing error from writer '{0}'...", writer.Identifier));
+
             // TODO: LogController.HandleWriterException : Retrieve throwWriterExceptions value from Config
             bool throwWriterExceptions = false;
-
-            // TODO: LogController.HandleWriterException : Handle null exceptions better when throwWriterExceptions is true. Maybe create exception if exc is null but message has been provided (use logWriter id + message)? Maybe just do a null check and exit if null?.
+            
             if (throwWriterExceptions)
+            {
+                WriteToControllerLog(String.Concat("... ", nameof(throwWriterExceptions), " was true. Throwing writer exception"));
                 throw exc != null ? exc : new Exception(message ?? String.Empty);
+            }
             else
+            {
+                WriteToControllerLog(String.Concat("... ", nameof(throwWriterExceptions), " was false. Raising writer error event."));
                 OnWriterError?.Invoke(this, new LogWriterErrorArgs(writer, message, exc));
+            }
         }
 
         private void ToggleControllerLogging(bool loggingEnabled)
         {
+            WriteToControllerLog(String.Format("Toggling controller logging from {0} to {1}.", ControllerLoggingEnabled, loggingEnabled));
+
             if (_ControllerLoggingEnabled == loggingEnabled)
                 return; // No need to bother if current equals value
 
@@ -155,6 +164,8 @@ namespace LogIt.Core
 
         private void InitControllerLog()
         {
+            WriteToControllerLog("Reinitialising controller log..."); // this will only be seen if an existing controller log exists
+
             if (_ControllerDebugLog != null)
                 DisposeControllerLog(); // Dispose and reset if ControllerLog already exists
 
@@ -167,16 +178,26 @@ namespace LogIt.Core
 
             // TODO: LogController.InitControllerLog : Add method to add user specified ILogWriters to controller logging
 
-            throw new NotImplementedException();
+            WriteToControllerLog("Controller log initialised.");
         }
 
         private void DisposeControllerLog()
         {
+            WriteToControllerLog("Disposing current controller log...");
+
             if (_ControllerDebugLog == null)
                 return;
 
             _ControllerDebugLog.Dispose();
             _ControllerDebugLog = null;
+        }
+
+        private void WriteToControllerLog(string message, NameValueCollection logDetail = null)
+        {
+            if (!ControllerLoggingEnabled)
+                return;
+
+            _ControllerDebugLog.Debug(message, logDetail);
         }
     }
 
