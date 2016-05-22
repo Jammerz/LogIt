@@ -17,7 +17,7 @@ namespace LogIt.Core
 
         private ControllerConfig _Config;
         public ControllerConfig Config {
-            get { return _Config; } 
+            get { return _Config; }
             set { _Config = value ?? new ControllerConfig(); }
         }
 
@@ -127,22 +127,56 @@ namespace LogIt.Core
 
         private void HandleWriterException(ILogWriter writer, string message, Exception exc)
         {
-            throw new NotImplementedException();
+            if (writer == null)
+                throw new ArgumentNullException(nameof(writer));
+
+            // TODO: LogController.HandleWriterException : Retrieve throwWriterExceptions value from Config
+            bool throwWriterExceptions = false;
+
+            // TODO: LogController.HandleWriterException : Handle null exceptions better when throwWriterExceptions is true. Maybe create exception if exc is null but message has been provided (use logWriter id + message)? Maybe just do a null check and exit if null?.
+            if (throwWriterExceptions)
+                throw exc != null ? exc : new Exception(message ?? String.Empty);
+            else
+                OnWriterError?.Invoke(this, new LogWriterErrorArgs(writer, message, exc));
         }
 
         private void ToggleControllerLogging(bool loggingEnabled)
         {
-            throw new NotImplementedException();
+            if (_ControllerLoggingEnabled == loggingEnabled)
+                return; // No need to bother if current equals value
+
+            _ControllerLoggingEnabled = loggingEnabled; // Set here to prevent further logging attempts during disposal (if value == false)
+
+            if (loggingEnabled)  // Initialise or dispose controller log depending on value
+                InitControllerLog();
+            else
+                DisposeControllerLog();
         }
 
         private void InitControllerLog()
         {
+            if (_ControllerDebugLog != null)
+                DisposeControllerLog(); // Dispose and reset if ControllerLog already exists
+
+            // TODO: LogController.InitControllerLog : Customise config so it is suitable for controller logging.
+            ControllerConfig config = new ControllerConfig();
+            _ControllerDebugLog = new LogController(config);
+
+            // TODO: LogController.InitControllerLog : Add standard output log once developed
+
+
+            // TODO: LogController.InitControllerLog : Add method to add user specified ILogWriters to controller logging
+
             throw new NotImplementedException();
         }
 
         private void DisposeControllerLog()
         {
-            throw new NotImplementedException();
+            if (_ControllerDebugLog == null)
+                return;
+
+            _ControllerDebugLog.Dispose();
+            _ControllerDebugLog = null;
         }
     }
 
@@ -162,7 +196,7 @@ namespace LogIt.Core
 
         private Exception _Exception;
         public Exception Exception {
-            get { return _Exception;  }
+            get { return _Exception; }
             set { _Exception = value; }
         }
 
