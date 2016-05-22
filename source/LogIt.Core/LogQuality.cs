@@ -10,6 +10,6 @@ namespace LogIt.Core
     {
         Verbose = 30,
         Standard = 20,
-        Minimal = 10
+        Terse = 10
     }
 }
