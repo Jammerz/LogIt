@@ -47,7 +47,7 @@
     <Compile Include="ILogReader.cs" />
     <Compile Include="ILogQuery.cs" />
     <Compile Include="ILogWriter.cs" />
-    <Compile Include="LoggingDetail.cs" />
+    <Compile Include="LogQuality.cs" />
     <Compile Include="LogConfig.cs" />
     <Compile Include="LogLevel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

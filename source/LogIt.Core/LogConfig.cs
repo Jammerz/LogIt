@@ -10,7 +10,7 @@ namespace LogIt.Core
     {
         public LogLevel MinimumLogLevel { get; set; }
 
-        public LoggingDetail DetailLevel { get; set; }
+        public LogQuality WriteQuality { get; set; }
         
         public LogConfig()
         {
@@ -20,7 +20,7 @@ namespace LogIt.Core
         protected virtual void ApplyDefaultOptions()
         {
             MinimumLogLevel = LogLevel.Debug;
-            DetailLevel = LoggingDetail.Standard;
+            DetailLevel = LogQuality.Standard;
         }
     }
 }

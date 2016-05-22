@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LogIt.Core
 {
-    public enum LoggingDetail
+    public enum LogQuality
     {
         Verbose = 30,
         Standard = 20,

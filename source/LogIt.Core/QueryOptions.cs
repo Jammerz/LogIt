@@ -10,7 +10,7 @@ namespace LogIt.Core
     {
         public List<LogLevel> LogTypes { get; set; }
 
-        public LoggingDetail SearchDetailLevel { get; set; }
+        public LogQuality ReturnedLogQuality { get; set; }
 
         public DateTime? LoggedFrom { get; set; }
 
