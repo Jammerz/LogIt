@@ -20,7 +20,7 @@ namespace LogIt.Core
         protected virtual void ApplyDefaultOptions()
         {
             MinimumLogLevel = LogLevel.Debug;
-            DetailLevel = LogQuality.Standard;
+            WriteQuality = LogQuality.Standard;
         }
     }
 }
