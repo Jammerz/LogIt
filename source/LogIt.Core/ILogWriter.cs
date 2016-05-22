@@ -14,8 +14,8 @@ namespace LogIt.Core
 
         LogConfig Config { get; set; }
 
-        Log Write(LogBase log);
+        LogBase Write(LogBase log);
 
-        IEnumerable<Log> Write(List<LogBase> logs);
+        IEnumerable<LogBase> Write(List<LogBase> logs);
     }
 }
