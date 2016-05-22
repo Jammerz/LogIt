@@ -9,10 +9,10 @@ namespace LogIt.Core
 {
     public class LogController : IDisposable
     {
-        private List<ILogWriter> _Writers;
-        public List<ILogWriter> Writers {
+        private Dictionary<Guid, ILogWriter> _Writers;
+        public Dictionary<Guid, ILogWriter> Writers {
             get { return _Writers; }
-            private set { _Writers = value ?? new List<ILogWriter>(); }
+            private set { _Writers = value ?? new Dictionary<Guid, ILogWriter>(); }
         }
 
         private ControllerConfig _Config;
@@ -36,7 +36,7 @@ namespace LogIt.Core
 
         public LogController()
         {
-            Writers = new List<ILogWriter>();
+            Writers = new Dictionary<Guid, ILogWriter>();
             Config = new ControllerConfig();
         }
         public LogController(ControllerConfig config)
@@ -45,14 +45,28 @@ namespace LogIt.Core
             Config = config;
         }
 
-        public virtual ILogWriter Register(ILogWriter logger)
+        public virtual void Register(ILogWriter writer)
         {
-            throw new NotImplementedException();
+            if (writer == null)
+                throw new ArgumentNullException(nameof(writer));
+
+            if (!Writers.ContainsKey(writer.Identifier))
+                Writers.Add(writer.Identifier, writer);
+            else
+                throw new ArgumentException("A writer with a matching identifier is already registered with this controller.", nameof(writer));
         }
 
         public virtual void DeList(Guid identifer)
         {
-            throw new NotImplementedException();
+            ILogWriter writer = null;
+            if (Writers.TryGetValue(identifer, out writer))
+            {
+                Writers.Remove(identifer);
+
+                writer.Dispose();
+
+                writer = null;
+            }
         }
 
         public virtual LogBase Write(List<LogBase> logs)
