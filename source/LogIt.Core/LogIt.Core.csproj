@@ -49,7 +49,7 @@
     <Compile Include="ILogWriter.cs" />
     <Compile Include="LoggingDetail.cs" />
     <Compile Include="LoggingOptions.cs" />
-    <Compile Include="LoggingType.cs" />
+    <Compile Include="LogLevel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryOptions.cs" />
   </ItemGroup>

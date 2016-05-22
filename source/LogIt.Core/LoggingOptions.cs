@@ -8,7 +8,7 @@ namespace LogIt.Core
 {
     public class LoggingOptions
     {
-        public LoggingType MinimumLogLevel { get; set; }
+        public LogLevel MinimumLogLevel { get; set; }
 
         public LoggingDetail DetailLevel { get; set; }
         
@@ -19,7 +19,7 @@ namespace LogIt.Core
 
         protected virtual void ApplyDefaultOptions()
         {
-            MinimumLogLevel = LoggingType.Debug;
+            MinimumLogLevel = LogLevel.Debug;
             DetailLevel = LoggingDetail.Standard;
         }
     }

@@ -19,7 +19,7 @@ namespace LogIt.Core
         /// Specifies the type or severity of the log. 
         /// Allows for log read and write filtering
         /// </summary>
-        public LoggingType LogType { get; set; }
+        public LogLevel LogType { get; set; }
 
         /// <summary>
         /// The primary message of the log. 
@@ -70,21 +70,21 @@ namespace LogIt.Core
         private static StringComparer DEFAULT_KEY_COMPARISON = StringComparer.InvariantCultureIgnoreCase;
 
         public Log()
-            : this(String.Empty, LoggingType.Debug)
+            : this(String.Empty, LogLevel.Debug)
         {
 
         }
-        public Log(string message, LoggingType logType)
+        public Log(string message, LogLevel logType)
             : this(message, logType, DateTime.Now)
         {
 
         }
-        public Log(string message, LoggingType logType, DateTime logTime)
+        public Log(string message, LogLevel logType, DateTime logTime)
             : this(message, logType, logTime, null)
         {
 
         }
-        public Log(string message, LoggingType logType, DateTime logTime, NameValueCollection logDetail)
+        public Log(string message, LogLevel logType, DateTime logTime, NameValueCollection logDetail)
             : base()
         {
             LogTime = logTime;

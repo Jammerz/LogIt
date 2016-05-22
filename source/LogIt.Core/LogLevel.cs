@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LogIt.Core
 {
-    public enum LoggingType
+    public enum LogLevel
     {
         Error = 50,
         Warning = 40,

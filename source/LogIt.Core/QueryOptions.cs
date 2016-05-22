@@ -8,7 +8,7 @@ namespace LogIt.Core
 {
     public class QueryOptions
     {
-        public List<LoggingType> LogTypes { get; set; }
+        public List<LogLevel> LogTypes { get; set; }
 
         public LoggingDetail SearchDetailLevel { get; set; }
 
