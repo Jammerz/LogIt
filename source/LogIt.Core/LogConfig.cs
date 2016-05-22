@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace LogIt.Core
 {
-    public class LoggingOptions
+    public class LogConfig
     {
         public LogLevel MinimumLogLevel { get; set; }
 
         public LoggingDetail DetailLevel { get; set; }
         
-        public LoggingOptions()
+        public LogConfig()
         {
             ApplyDefaultOptions();
         }

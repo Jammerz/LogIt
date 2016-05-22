@@ -12,7 +12,7 @@ namespace LogIt.Core
 
         string Description { get; }
 
-        LoggingOptions Options { get; set; }
+        LogConfig Options { get; set; }
 
         ILogReader GetReader();
 
