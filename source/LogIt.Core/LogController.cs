@@ -78,22 +78,60 @@ namespace LogIt.Core
             }
         }
 
-        public virtual LogBase Write(List<LogBase> logs)
+        public virtual void Write(List<LogBase> logs)
+        {
+            if (logs?.Count == 0)
+                return;
+
+            // Grab current list of log writers
+            List<ILogWriter> writers = Writers.Values.ToList();
+
+            if (writers?.Count > 0) 
+            {
+                // Use while and for loop. Loop like this so we can catch and...
+                // ... handle log writer exception without the overhead of...
+                // ... initialising a new try catch each itteration... 
+                // ... (unless we have some very dodgy writers).
+                int writeCount = 0;
+                while (writeCount < writers.Count)
+                {
+                    try
+                    {
+                        for (; writeCount < writers.Count; writeCount++)
+                        {
+                            if (logs.Count == 1)
+                                writers[writeCount].Write(logs[0]);
+                            else
+                                writers[writeCount].Write(logs);
+                        }
+                    }
+                    catch (Exception exc)
+                    {
+                        HandleWriterException(writers[writeCount], String.Format("Error writing to log. Message: {0}", exc.Message), exc);
+                        writeCount++;
+                    }
+                }
+            }
+        }
+
+        public virtual void Write(LogBase log)
+        {
+            if (log == null)
+                return;
+
+            // Use list override of method to avoid repeating ourselves. 
+            // The list initialisation for each individual log call may be...
+            // ... considered too much overhead. I'm stubornly trying to... 
+            // ... keep my code pretty over keeping it pratical. 
+            Write(new List<LogBase>(1) { log });
+        }
+
+        public Log Write(string message, LogLevel logType, NameValueCollection logDetail = null)
         {
             throw new NotImplementedException();
         }
 
-        public virtual LogBase Write(LogBase log)
-        {
-            throw new NotImplementedException();
-        }
-
-        public LogBase Write(string message, LogLevel logType, NameValueCollection logDetail = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public LogBase WriteException(Exception exc, LogLevel logType, NameValueCollection logDetail = null)
+        public Log WriteException(Exception exc, LogLevel logType, NameValueCollection logDetail = null)
         {
             throw new NotImplementedException();
         }
