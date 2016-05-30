@@ -83,10 +83,14 @@ namespace LogIt.Core
             if (logs?.Count == 0)
                 return;
 
-            // Grab current list of log writers
-            List<ILogWriter> writers = Writers.Values.ToList();
-
-            if (writers?.Count > 0) 
+            // Grab current list of log writers, holding the lock for as short a time as possible
+            List<ILogWriter> writers = null;
+            lock (WritersLock)
+            {
+                writers = Writers.Values.ToList();
+            }
+            
+            if (writers.Count > 0) 
             {
                 // Use while and for loop. Loop like this so we can catch and...
                 // ... handle log writer exception without the overhead of...
@@ -107,7 +111,10 @@ namespace LogIt.Core
                     }
                     catch (Exception exc)
                     {
-                        HandleWriterException(writers[writeCount], String.Format("Error writing to log. Message: {0}", exc.Message), exc);
+                        HandleWriterException(writers[writeCount], 
+                            String.Format("Error writing to '{0}'. Error: {1}", writers[writeCount].Name ?? writers[writeCount].Identifier.ToString(), exc.Message), 
+                            exc);
+
                         writeCount++;
                     }
                 }
@@ -183,7 +190,36 @@ namespace LogIt.Core
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            lock (WritersLock)
+            {
+                List<ILogWriter> writers = Writers.Values.ToList();
+
+                if (writers?.Count > 0)
+                {
+                    for (int remainingDisposals = writers.Count; remainingDisposals > 0; remainingDisposals--)
+                    {
+                        ILogWriter writer = writers[remainingDisposals - 1];
+
+                        try
+                        {
+                            // Cannot use Delist as this also uses the WritersLock object
+                            writer.Dispose();
+
+                            Writers.Remove(writer.Identifier);
+
+                            writer = null;
+
+                            writers.RemoveAt(remainingDisposals - 1);
+                        }
+                        catch (Exception exc)
+                        {
+                            HandleWriterException(writer,
+                                String.Format("Error disposing '{0}'. Error: {1}", writer.Name ?? writer.Identifier.ToString(), exc.Message),
+                                exc);
+                        }
+                    }
+                }
+            }            
         }
 
         private void HandleWriterException(ILogWriter writer, string message, Exception exc)
