@@ -135,57 +135,64 @@ namespace LogIt.Core
 
         public Log Write(string message, LogLevel logType, NameValueCollection logDetail = null)
         {
-            throw new NotImplementedException();
+            Log log = new Log(message, logType, logDetail);
+
+            Write(log);
+
+            return log;
         }
 
         public Log WriteException(Exception exc, LogLevel logType, NameValueCollection logDetail = null)
         {
-            throw new NotImplementedException();
+            // TODO: LogController.WriteException : Format message 'better'. Maybe use a publicly settable formatter?
+            string message = exc != null && exc.Message != null ? exc.Message : String.Empty;
+
+            return Write(message, logType, logDetail);
         }
 
         public Log Critical(string message, NameValueCollection logDetail = null)
         {
-            throw new NotImplementedException();
+            return Write(message, LogLevel.Critical, logDetail);
         }
 
         public Log CriticalException(Exception exc, NameValueCollection logDetail = null)
         {
-            throw new NotImplementedException();
+            return WriteException(exc, LogLevel.Critical, logDetail);
         }
 
         public Log Error(string message, NameValueCollection logDetail = null)
         {
-            throw new NotImplementedException();
+            return Write(message, LogLevel.Error, logDetail);
         }
 
         public Log ErrorException(Exception exc, NameValueCollection logDetail = null)
         {
-            throw new NotImplementedException();
+            return WriteException(exc, LogLevel.Error, logDetail);
         }
 
         public Log Warning(string message, NameValueCollection logDetail = null)
         {
-            throw new NotImplementedException();
+            return Write(message, LogLevel.Warning, logDetail);
         }
 
         public Log WarningException(Exception exc, NameValueCollection logDetail = null)
         {
-            throw new NotImplementedException();
+            return WriteException(exc, LogLevel.Warning, logDetail);
         }
 
         public Log Info(string message, NameValueCollection logDetail = null)
         {
-            throw new NotImplementedException();
+            return Write(message, LogLevel.Info, logDetail);
         }
 
         public Log Debug(string message, NameValueCollection logDetail = null)
         {
-            throw new NotImplementedException();
+            return Write(message, LogLevel.Debug, logDetail);
         }
 
         public Log Trace(string message, NameValueCollection logDetail = null)
         {
-            throw new NotImplementedException();
+            return Write(message, LogLevel.Trace, logDetail);
         }
 
         public void Dispose()
