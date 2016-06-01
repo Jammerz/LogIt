@@ -75,12 +75,17 @@ namespace LogIt.Core
 
         }
         public Log(string message, LogLevel logType)
-            : this(message, logType, DateTime.Now)
+            : this(message, logType, null)
         {
 
         }
         public Log(string message, LogLevel logType, DateTime logTime)
             : this(message, logType, logTime, null)
+        {
+
+        }
+        public Log(string message, LogLevel logType, NameValueCollection logDetail)
+            : this(message, logType, DateTime.Now, logDetail)
         {
 
         }
