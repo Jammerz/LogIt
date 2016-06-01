@@ -53,6 +53,8 @@ namespace LogIt.Core
             if (writer == null)
                 throw new ArgumentNullException(nameof(writer));
 
+            WriteToControllerLog("{0}: Adding  writer '{1}' to controller...", nameof(Register), writer.Identifier);
+
             lock (WritersLock)
             {
                 if (!Writers.ContainsKey(writer.Identifier))
@@ -64,6 +66,8 @@ namespace LogIt.Core
 
         public virtual void DeList(Guid identifer)
         {
+            WriteToControllerLog("{0}: Removing writer '{1}' from controller...", nameof(DeList), identifer);
+
             lock (WritersLock)
             {
                 ILogWriter writer = null;
@@ -197,6 +201,8 @@ namespace LogIt.Core
 
         public void Dispose()
         {
+            WriteToControllerLog("{0}: Disposing LocController...", nameof(Dispose));
+
             lock (WritersLock)
             {
                 List<ILogWriter> writers = Writers.Values.ToList();
@@ -226,6 +232,8 @@ namespace LogIt.Core
                         }
                     }
                 }
+
+                // TODO: LogController.Dispose : Complete disposal of instace.
             }            
         }
 
@@ -234,26 +242,26 @@ namespace LogIt.Core
             if (writer == null)
                 throw new ArgumentNullException(nameof(writer));
 
-            WriteToControllerLog(String.Format("Processing error from writer '{0}'...", writer.Identifier));
+            WriteToControllerLog("{0}: Processing error from writer '{1}'...", nameof(HandleWriterException), writer.Identifier);
 
             // TODO: LogController.HandleWriterException : Retrieve throwWriterExceptions value from Config
             bool throwWriterExceptions = false;
             
             if (throwWriterExceptions)
             {
-                WriteToControllerLog(String.Concat("... ", nameof(throwWriterExceptions), " was true. Throwing writer exception"));
+                WriteToControllerLog("{0}: ... {1} was true. Throwing writer exception", nameof(HandleWriterException), nameof(throwWriterExceptions));
                 throw exc != null ? exc : new Exception(message ?? String.Empty);
             }
             else
             {
-                WriteToControllerLog(String.Concat("... ", nameof(throwWriterExceptions), " was false. Raising writer error event."));
+                WriteToControllerLog("{0}: ... {1} was false. Raising writer error event.", nameof(HandleWriterException), nameof(throwWriterExceptions));
                 OnWriterError?.Invoke(this, new LogWriterErrorArgs(writer, message, exc));
             }
         }
 
         private void ToggleControllerLogging(bool loggingEnabled)
         {
-            WriteToControllerLog(String.Format("Toggling controller logging from {0} to {1}.", ControllerLoggingEnabled, loggingEnabled));
+            WriteToControllerLog("{0}: Switching controller logging from {1} to {2}.", nameof(ToggleControllerLogging), ControllerLoggingEnabled, loggingEnabled);
             
             if (_ControllerLoggingEnabled == loggingEnabled)
                 return; // No need to bother if current equals value
@@ -267,7 +275,7 @@ namespace LogIt.Core
 
         private void InitControllerLog()
         {
-            WriteToControllerLog("Reinitialising controller log..."); // this will only be seen if an existing controller log exists
+            WriteToControllerLog("{0}: Reinitialising controller log...", nameof(InitControllerLog)); // this will only be seen if an existing controller log exists
 
             if (_ControllerDebugLog != null)
                 DisposeControllerLog(); // Dispose and reset if ControllerLog already exists
@@ -285,12 +293,12 @@ namespace LogIt.Core
                 _ControllerLoggingEnabled = true;
             }
 
-            WriteToControllerLog("Controller log initialised.");
+            WriteToControllerLog("{0}: ... Controller log initialised.", nameof(InitControllerLog));
         }
 
         private void DisposeControllerLog()
         {
-            WriteToControllerLog("Disposing current controller log...");
+            WriteToControllerLog("{0}: Disposing current controller log...", nameof(DisposeControllerLog));
 
             lock (ControllerLoggingEnabledLock)
             {
@@ -305,12 +313,22 @@ namespace LogIt.Core
             }
         }
 
-        private void WriteToControllerLog(string message, NameValueCollection logDetail = null)
+        private void WriteToControllerLog(Log log)
         {
             if (ControllerLoggingEnabled)   // Do not use lock here as Debug call *could* potentially take some time and we do not want to lock the property for any amount of time
-                _ControllerDebugLog?.Debug(message, logDetail); // Use ternary as best thread safe call to ControllerLog without using lock
+                _ControllerDebugLog?.Write(log); // Use ternary as best thread safe call to ControllerLog without using lock
             else
                 return;
+        }
+
+        private void WriteToControllerLog(string message)
+        {
+            WriteToControllerLog(new Log(message, LogLevel.Debug));
+        }
+
+        private void WriteToControllerLog(string format, params object[] args)
+        {
+            WriteToControllerLog(String.Format(format, args));
         }
     }
 
