@@ -146,6 +146,14 @@ namespace LogIt.Core
             return log;
         }
 
+        public Log WriteFormat(LogLevel logType, string format, params object[] args)
+        {
+            if (format == null)
+                throw new ArgumentNullException(nameof(format));
+
+            return Write(String.Format(format, args), logType, null);
+        }
+
         public Log WriteException(Exception exc, LogLevel logType, NameValueCollection logDetail = null)
         {
             // TODO: LogController.WriteException : Format message 'better'. Maybe use a publicly settable formatter?
@@ -159,6 +167,11 @@ namespace LogIt.Core
             return Write(message, LogLevel.Critical, logDetail);
         }
 
+        public Log CriticalFormat(string format, params object[] args)
+        {
+            return WriteFormat(LogLevel.Critical, format, args);
+        }
+
         public Log CriticalException(Exception exc, NameValueCollection logDetail = null)
         {
             return WriteException(exc, LogLevel.Critical, logDetail);
@@ -167,6 +180,11 @@ namespace LogIt.Core
         public Log Error(string message, NameValueCollection logDetail = null)
         {
             return Write(message, LogLevel.Error, logDetail);
+        }
+
+        public Log ErrorFormat(string format, params object[] args)
+        {
+            return WriteFormat(LogLevel.Error, format, args);
         }
 
         public Log ErrorException(Exception exc, NameValueCollection logDetail = null)
@@ -179,6 +197,11 @@ namespace LogIt.Core
             return Write(message, LogLevel.Warning, logDetail);
         }
 
+        public Log WarningFormat(string format, params object[] args)
+        {
+            return WriteFormat(LogLevel.Warning, format, args);
+        }
+
         public Log WarningException(Exception exc, NameValueCollection logDetail = null)
         {
             return WriteException(exc, LogLevel.Warning, logDetail);
@@ -189,14 +212,29 @@ namespace LogIt.Core
             return Write(message, LogLevel.Info, logDetail);
         }
 
+        public Log InfoFormat(string format, params object[] args)
+        {
+            return WriteFormat(LogLevel.Info, format, args);
+        }
+
         public Log Debug(string message, NameValueCollection logDetail = null)
         {
             return Write(message, LogLevel.Debug, logDetail);
         }
 
+        public Log DebugFormat(string format, params object[] args)
+        {
+            return WriteFormat(LogLevel.Debug, format, args);
+        }
+
         public Log Trace(string message, NameValueCollection logDetail = null)
         {
             return Write(message, LogLevel.Trace, logDetail);
+        }
+
+        public Log TraceFormat(string format, params object[] args)
+        {
+            return WriteFormat(LogLevel.Trace, format, args);
         }
 
         public void Dispose()
