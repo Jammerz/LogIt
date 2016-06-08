@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleLog.cs" />
     <Compile Include="ControllerConfig.cs" />
     <Compile Include="ILogConnection.cs" />
     <Compile Include="ILoggable.cs" />
