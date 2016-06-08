@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LogIt.Core
 {
-    public interface ILogWriter : ILogConnection
+    public interface ILogWriter : IDisposable
     {
         Guid Identifier { get; }
 
